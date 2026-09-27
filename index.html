@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#03150f"
+    >
+
+    <title>VibeSense AI</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Face API -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js">
+    </script>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="header">
+
+        <div class="brand">
+
+            <h1>VibeSense AI</h1>
+
+            <p>
+                AI Vision & Interactive Air Drawing
+            </p>
+
+        </div>
+
+        <div class="system-status">
+
+            <span class="status-dot"></span>
+
+            <span id="systemStatus">
+                Initializing...
+            </span>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="main">
+
+        <!-- =================================================
+             CAMERA SECTION
+        ================================================== -->
+
+        <section class="camera-section">
+
+            <div class="camera-wrapper">
+
+                <!-- CAMERA -->
+                <video
+                    id="video"
+                    autoplay
+                    muted
+                    playsinline
+                ></video>
+
+                <!-- FACE / HAND OVERLAY -->
+                <canvas
+                    id="overlayCanvas">
+                </canvas>
+
+                <!-- AIR DRAWING -->
+                <canvas
+                    id="drawingCanvas">
+                </canvas>
+
+
+                <!-- =================================================
+                     LOADING
+                ================================================== -->
+
+                <div
+                    id="loading"
+                    class="loading"
+                >
+
+                    <div class="loading-spinner"></div>
+
+                    <h2>
+                        Starting VibeSense AI
+                    </h2>
+
+                    <p id="loadingText">
+                        Loading AI models...
+                    </p>
+
+                </div>
+
+
+                <!-- =================================================
+                     START SCREEN
+                ================================================== -->
+
+                <div
+                    id="startScreen"
+                    class="start-screen"
+                >
+
+                    <div class="camera-icon">
+                        📷
+                    </div>
+
+                    <h2>
+                        VibeSense AI
+                    </h2>
+
+                    <p>
+                        Face • Age • Expression • Hands • Air Drawing
+                    </p>
+
+                    <button
+                        id="startCameraBtn"
+                        class="primary-btn"
+                    >
+                        📷 Start Camera
+                    </button>
+
+                    <small>
+                        Your camera stays in your browser.
+                    </small>
+
+                </div>
+
+
+                <!-- =================================================
+                     CAMERA CONTROLS
+                ================================================== -->
+
+                <div
+                    id="cameraControls"
+                    class="camera-controls hidden"
+                >
+
+                    <button
+                        id="stopCameraBtn"
+                        class="control-btn stop-btn"
+                    >
+                        ⏹ Stop
+                    </button>
+
+                    <button
+                        id="switchCameraBtn"
+                        class="control-btn"
+                    >
+                        🔄 Camera
+                    </button>
+
+                    <button
+                        id="drawingToggle"
+                        class="control-btn drawing-btn"
+                    >
+                        ✏️ Drawing OFF
+                    </button>
+
+                    <button
+                        id="clearDrawing"
+                        class="control-btn"
+                    >
+                        🗑 Clear
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             DASHBOARD
+        ================================================== -->
+
+        <aside class="dashboard">
+
+
+            <!-- =================================================
+                 LIVE ANALYSIS
+            ================================================== -->
+
+            <section class="panel">
+
+                <h2>
+                    Live Analysis
+                </h2>
+
+                <div class="stats-grid">
+
+                    <div class="stat-card">
+
+                        <strong id="peopleCount">
+                            0
+                        </strong>
+
+                        <span>
+                            People
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <strong id="handsCount">
+                            0
+                        </strong>
+
+                        <span>
+                            Hands
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <strong id="movementStatus">
+                            Low
+                        </strong>
+
+                        <span>
+                            Movement
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 PEOPLE
+            ================================================== -->
+
+            <section class="panel people-panel">
+
+                <div class="panel-title">
+
+                    <h2>
+                        People
+                    </h2>
+
+                    <span
+                        id="peopleBadge"
+                        class="badge"
+                    >
+                        0
+                    </span>
+
+                </div>
+
+                <div
+                    id="peopleList"
+                    class="people-list"
+                >
+
+                    <div class="empty-state">
+                        No person detected
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 AIR DRAWING
+            ================================================== -->
+
+            <section class="panel">
+
+                <h2>
+                    Air Drawing
+                </h2>
+
+                <div class="drawing-status">
+
+                    <span>
+                        Status
+                    </span>
+
+                    <strong id="drawingStatus">
+                        OFF
+                    </strong>
+
+                </div>
+
+
+                <div class="drawing-section">
+
+                    <label>
+                        Select Color
+                    </label>
+
+                    <div class="color-row">
+
+                        <button
+                            class="color-btn active"
+                            data-color="#ff3b30"
+                            style="background:#ff3b30"
+                            aria-label="Red"
+                        ></button>
+
+                        <button
+                            class="color-btn"
+                            data-color="#007aff"
+                            style="background:#007aff"
+                            aria-label="Blue"
+                        ></button>
+
+                        <button
+                            class="color-btn"
+                            data-color="#34c759"
+                            style="background:#34c759"
+                            aria-label="Green"
+                        ></button>
+
+                        <button
+                            class="color-btn"
+                            data-color="#ffd60a"
+                            style="background:#ffd60a"
+                            aria-label="Yellow"
+                        ></button>
+
+                        <button
+                            class="color-btn"
+                            data-color="#af52de"
+                            style="background:#af52de"
+                            aria-label="Purple"
+                        ></button>
+
+                        <button
+                            class="color-btn"
+                            data-color="#ffffff"
+                            style="background:#ffffff"
+                            aria-label="White"
+                        ></button>
+
+                        <button
+                            id="eraserBtn"
+                            class="eraser-btn"
+                            aria-label="Eraser"
+                        >
+                            E
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="brush-row">
+
+                    <span>
+                        Brush
+                    </span>
+
+                    <button
+                        id="brushMinus"
+                        class="small-btn"
+                    >
+                        −
+                    </button>
+
+                    <strong id="brushSize">
+                        6px
+                    </strong>
+
+                    <button
+                        id="brushPlus"
+                        class="small-btn"
+                    >
+                        +
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 CONTROLS / HELP
+            ================================================== -->
+
+            <section class="panel controls-panel">
+
+                <h2>
+                    Controls
+                </h2>
+
+                <div class="instruction">
+                    ☝️
+                    <span>
+                        Move index finger to draw
+                    </span>
+                </div>
+
+                <div class="instruction">
+                    🎨
+                    <span>
+                        Choose any drawing color
+                    </span>
+                </div>
+
+                <div class="instruction">
+                    🗑️
+                    <span>
+                        Clear the drawing
+                    </span>
+                </div>
+
+                <div class="instruction">
+                    👥
+                    <span>
+                        Multiple people supported
+                    </span>
+                </div>
+
+            </section>
+
+        </aside>
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+
+        <span>
+            VibeSense AI
+        </span>
+
+        <span>
+            Observable expression & activity demo
+        </span>
+
+    </footer>
+
+</div>
+
+
+<script
+    type="module"
+    src="script.js">
+</script>
+
+</body>
+
+</html>

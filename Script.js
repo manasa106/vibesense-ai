@@ -22,7 +22,8 @@ import {
     HandLandmarker,
     FilesetResolver
 } from "https://esm.sh/@mediapipe/tasks-vision@1.0.1";
-
+const SIGNALING_SERVER =
+  "https://vibesenseai-server.onrender.com";
 
 // ============================================================
 // DOM
